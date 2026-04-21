@@ -38,4 +38,13 @@ export const gateScansApi = {
   const { data } = await apiClient.get(`/api/Security/history?${params.toString()}`);
   return data;
 },
+getLiveInside: async () => {
+  const { data } = await apiClient.get("/api/Security/live-inside");
+  return data;
+},
+
+getLiveLocations: async () => {
+  const { data } = await apiClient.get("/api/Location/live");
+  return data;
+},
 };

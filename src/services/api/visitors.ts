@@ -27,4 +27,11 @@ export const visitorsApi = {
     const { data } = await apiClient.get(`/api/Visitors/status/${visitRequestId}`);
     return data;
   },
+
+  updateLocation: async (visitRequestId: number, latitude: number, longitude: number) => {
+  const { data } = await apiClient.post("/api/Location/update", {
+    visitRequestId, latitude, longitude
+  });
+  return data;
+},
 };

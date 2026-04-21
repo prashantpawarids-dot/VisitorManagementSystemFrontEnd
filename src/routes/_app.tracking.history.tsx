@@ -118,18 +118,32 @@ function HistoryPage() {
                       </td>
                       <td className="px-4 py-3 text-muted-foreground">
                         {row.checkInTime
-                          ? new Date(row.checkInTime).toLocaleTimeString()
+                          ? new Date(row.checkInTime + "Z").toLocaleString("en-IN", {
+                            day: "2-digit",
+                            month: "short",
+                            year: "numeric",
+                            hour: "2-digit",
+                            minute: "2-digit",
+                            hour12: true,
+                          })
                           : "—"}
                       </td>
+
                       <td className="px-4 py-3 text-muted-foreground">
                         {row.checkOutTime
-                          ? new Date(row.checkOutTime).toLocaleTimeString()
+                          ? new Date(row.checkOutTime + "Z").toLocaleString("en-IN", {
+                            day: "2-digit",
+                            month: "short",
+                            year: "numeric",
+                            hour: "2-digit",
+                            minute: "2-digit",
+                            hour12: true,
+                          })
                           : "—"}
                       </td>
                       <td className="px-4 py-3">
-                        <span className={`rounded-full px-2.5 py-0.5 text-xs font-medium ${
-                          statusColor[row.status] ?? "bg-muted text-muted-foreground"
-                        }`}>
+                        <span className={`rounded-full px-2.5 py-0.5 text-xs font-medium ${statusColor[row.status] ?? "bg-muted text-muted-foreground"
+                          }`}>
                           {row.status}
                         </span>
                       </td>

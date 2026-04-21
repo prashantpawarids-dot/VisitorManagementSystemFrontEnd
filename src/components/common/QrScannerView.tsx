@@ -9,24 +9,30 @@ interface Props {
 
 export function QrScannerView({ onScan, active }: Props) {
   const videoRef = useRef<HTMLVideoElement>(null);
-  const readerRef = useRef<BrowserMultiFormatReader | null>(null);
   const controlsRef = useRef<{ stop: () => void } | null>(null);
+  const hasScannedRef = useRef(false);
   const [started, setStarted] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     if (!active || !videoRef.current) return;
 
+    hasScannedRef.current = false;
+    setStarted(false);
+    setError(null);
+
     const reader = new BrowserMultiFormatReader();
-    readerRef.current = reader;
 
     reader
       .decodeFromVideoDevice(
-        undefined, // use default camera
+        undefined,
         videoRef.current,
-        (result, err, controls) => {
+        (result, _err, controls) => {
           controlsRef.current = controls;
-          if (result) {
+          if (result && !hasScannedRef.current) {
+            hasScannedRef.current = true;
+            controls.stop();
+            controlsRef.current = null;
             onScan(result.getText());
           }
         }
@@ -41,10 +47,9 @@ export function QrScannerView({ onScan, active }: Props) {
       });
 
     return () => {
-      // ✅ Clean stop — no DOM conflicts with React
       controlsRef.current?.stop();
       controlsRef.current = null;
-      readerRef.current = null;
+      hasScannedRef.current = false;
       setStarted(false);
     };
   }, [active]);
@@ -61,7 +66,6 @@ export function QrScannerView({ onScan, active }: Props) {
   return (
     <div className="flex flex-col items-center gap-4">
       <div className="relative w-full max-w-sm overflow-hidden rounded-xl border border-border/60 bg-black">
-        {/* ✅ React owns this video element — no DOM conflicts */}
         <video
           ref={videoRef}
           className="w-full"
